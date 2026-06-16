@@ -1,0 +1,82 @@
+{% extends 'store/base.html' %}
+{% block title %}Order Confirmed — ShopVerse{% endblock %}
+
+{% block content %}
+<div class="container confirmation-page">
+  <div class="confirmation-card">
+    <div class="confirmation-icon">
+      <div class="check-circle">
+        <i class="fas fa-check fa-3x"></i>
+      </div>
+    </div>
+    <h1>Order Confirmed! 🎉</h1>
+    <p class="confirmation-msg">Thank you, <strong>{{ order.full_name }}</strong>! Your order has been placed successfully.</p>
+
+    <div class="order-number-box">
+      <span>Order Number</span>
+      <strong>#{{ order.id }}</strong>
+    </div>
+
+    <div class="confirmation-details">
+      <div class="conf-section">
+        <h3><i class="fas fa-box-open"></i> Order Summary</h3>
+        <div class="conf-items">
+          {% for item in order.items.all %}
+          <div class="conf-item">
+            <span class="conf-item-name">{{ item.product_name }} × {{ item.quantity }}</span>
+            <span class="conf-item-price">₹{{ item.subtotal }}</span>
+          </div>
+          {% endfor %}
+          <div class="conf-item conf-total">
+            <span><strong>Total Paid</strong></span>
+            <span><strong>₹{{ order.total_amount }}</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conf-section">
+        <h3><i class="fas fa-location-dot"></i> Shipping To</h3>
+        <div class="shipping-info">
+          <p><strong>{{ order.full_name }}</strong></p>
+          <p>{{ order.address }}</p>
+          <p>{{ order.city }}, {{ order.state }} {{ order.zip_code }}</p>
+          <p>{{ order.country }}</p>
+          <p><i class="fas fa-envelope"></i> {{ order.email }}</p>
+          <p><i class="fas fa-phone"></i> {{ order.phone }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-status-track">
+      <div class="track-step active">
+        <i class="fas fa-circle-check"></i>
+        <span>Order Placed</span>
+      </div>
+      <div class="track-line"></div>
+      <div class="track-step">
+        <i class="fas fa-circle"></i>
+        <span>Processing</span>
+      </div>
+      <div class="track-line"></div>
+      <div class="track-step">
+        <i class="fas fa-circle"></i>
+        <span>Shipped</span>
+      </div>
+      <div class="track-line"></div>
+      <div class="track-step">
+        <i class="fas fa-circle"></i>
+        <span>Delivered</span>
+      </div>
+    </div>
+
+    <div class="confirmation-actions">
+      <a href="{% url 'order_detail' order.id %}" class="btn-primary">
+        <i class="fas fa-eye"></i> View Order Details
+      </a>
+      <a href="{% url 'product_list' %}" class="btn-secondary">
+        <i class="fas fa-store"></i> Continue Shopping
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

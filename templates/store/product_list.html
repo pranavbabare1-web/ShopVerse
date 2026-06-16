@@ -1,0 +1,98 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Products — ShopVerse{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>{% if query %}Results for "{{ query }}"{% elif active_category %}{{ active_category.name }}{% else %}All Products{% endif %}</h1>
+    <p>{{ total_count }} product{{ total_count|pluralize }} found</p>
+  </div>
+</div>
+
+<div class="container shop-layout">
+
+  <!-- ── Sidebar ────────────────────────────────────────────────────────── -->
+  <aside class="shop-sidebar">
+    <div class="sidebar-card">
+      <h3><i class="fas fa-filter"></i> Categories</h3>
+      <ul class="category-list">
+        <li>
+          <a href="{% url 'product_list' %}{% if query %}?q={{ query }}{% endif %}"
+             class="{% if not active_category %}active{% endif %}">
+            <i class="fas fa-th-large"></i> All Products
+            <span class="count">{{ total_count }}</span>
+          </a>
+        </li>
+        {% for cat in categories %}
+        <li>
+          <a href="{% url 'product_list' %}?category={{ cat.slug }}{% if query %}&q={{ query }}{% endif %}"
+             class="{% if active_category.slug == cat.slug %}active{% endif %}">
+            <i class="fas {{ cat.icon|default:'fa-tag' }}"></i> {{ cat.name }}
+            <span class="count">{{ cat.products.count }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="sidebar-card">
+      <h3><i class="fas fa-search"></i> Search</h3>
+      <form action="{% url 'product_list' %}" method="get">
+        {% if active_category %}<input type="hidden" name="category" value="{{ active_category.slug }}" />{% endif %}
+        <div class="sidebar-search">
+          <input type="text" name="q" placeholder="Search products..." value="{{ query }}" />
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </div>
+      </form>
+    </div>
+  </aside>
+
+  <!-- ── Product Area ───────────────────────────────────────────────────── -->
+  <div class="shop-main">
+    <!-- Sort + Count bar -->
+    <div class="shop-toolbar">
+      <span class="results-count">Showing <strong>{{ total_count }}</strong> products</span>
+      <div class="sort-wrap">
+        <label for="sortSelect"><i class="fas fa-sort"></i> Sort:</label>
+        <select id="sortSelect" onchange="applySort(this.value)">
+          <option value="" {% if not sort %}selected{% endif %}>Default</option>
+          <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+          <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+          <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+          <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>Name: A–Z</option>
+          <option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>Name: Z–A</option>
+        </select>
+      </div>
+    </div>
+
+    {% if products %}
+    <div class="products-grid">
+      {% for product in products %}
+      {% include 'store/partials/product_card.html' %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-box-open fa-4x"></i>
+      <h3>No Products Found</h3>
+      <p>Try a different search term or browse all categories.</p>
+      <a href="{% url 'product_list' %}" class="btn-primary">Browse All Products</a>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function applySort(val) {
+  const url = new URL(window.location.href);
+  if (val) url.searchParams.set('sort', val);
+  else url.searchParams.delete('sort');
+  window.location.href = url.toString();
+}
+</script>
+{% endblock %}

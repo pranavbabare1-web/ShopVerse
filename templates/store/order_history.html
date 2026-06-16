@@ -1,0 +1,65 @@
+{% extends 'store/base.html' %}
+{% block title %}My Orders — ShopVerse{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="fas fa-box-open"></i> My Orders</h1>
+    <p>{{ orders.count }} order{{ orders.count|pluralize }} placed</p>
+  </div>
+</div>
+
+<div class="container">
+  {% if orders %}
+  <div class="orders-list">
+    {% for order in orders %}
+    <div class="order-card">
+      <div class="order-card-header">
+        <div class="order-id">
+          <span>Order</span>
+          <strong>#{{ order.id }}</strong>
+        </div>
+        <div class="order-date">
+          <i class="fas fa-calendar"></i>
+          {{ order.created_at|date:"F d, Y" }}
+        </div>
+        <div class="order-status-badge status-{{ order.status }}">
+          {% if order.status == 'pending' %}<i class="fas fa-clock"></i>
+          {% elif order.status == 'processing' %}<i class="fas fa-gears"></i>
+          {% elif order.status == 'shipped' %}<i class="fas fa-truck"></i>
+          {% elif order.status == 'delivered' %}<i class="fas fa-circle-check"></i>
+          {% else %}<i class="fas fa-circle-xmark"></i>{% endif %}
+          {{ order.get_status_display }}
+        </div>
+        <div class="order-total">
+          <span>Total</span>
+          <strong>₹{{ order.total_amount }}</strong>
+        </div>
+        <a href="{% url 'order_detail' order.id %}" class="btn-view-order">
+          View Details <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+      <div class="order-card-body">
+        {% for item in order.items.all %}
+        <div class="order-mini-item">
+          <span class="mini-item-name">{{ item.product_name }}</span>
+          <span class="mini-item-qty">× {{ item.quantity }}</span>
+          <span class="mini-item-price">₹{{ item.subtotal }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <i class="fas fa-box-open fa-4x"></i>
+    <h3>No Orders Yet</h3>
+    <p>You haven't placed any orders. Start shopping!</p>
+    <a href="{% url 'product_list' %}" class="btn-primary">
+      <i class="fas fa-store"></i> Shop Now
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

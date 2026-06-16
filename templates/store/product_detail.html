@@ -1,0 +1,155 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} — ShopVerse{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav">
+    <a href="{% url 'home' %}">Home</a>
+    <i class="fas fa-chevron-right"></i>
+    <a href="{% url 'product_list' %}">Products</a>
+    {% if product.category %}
+    <i class="fas fa-chevron-right"></i>
+    <a href="{% url 'product_list' %}?category={{ product.category.slug }}">{{ product.category.name }}</a>
+    {% endif %}
+    <i class="fas fa-chevron-right"></i>
+    <span>{{ product.name }}</span>
+  </nav>
+
+  <!-- Product Detail -->
+  <div class="product-detail-grid">
+    <!-- Image -->
+    <div class="product-detail-image">
+      <div class="main-image-wrap">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" id="mainImage" />
+        {% else %}
+        <div class="no-image-lg">
+          <i class="fas fa-image fa-5x"></i>
+          <p>No image available</p>
+        </div>
+        {% endif %}
+        {% if product.is_featured %}
+        <span class="detail-badge">⭐ Featured</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="product-detail-info">
+      <span class="detail-category">
+        <i class="fas {{ product.category.icon|default:'fa-tag' }}"></i>
+        {{ product.category.name|default:"Uncategorized" }}
+      </span>
+      <h1 class="detail-name">{{ product.name }}</h1>
+
+      <div class="detail-rating">
+        <div class="stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          <i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i>
+        </div>
+        <span>4.5 out of 5 (128 reviews)</span>
+      </div>
+
+      <div class="detail-price-wrap">
+        <span class="detail-price">₹{{ product.price }}</span>
+        <span class="detail-original-price">₹{{ product.price|add:product.price }}</span>
+        <span class="detail-discount">50% OFF</span>
+      </div>
+
+      <div class="detail-stock {% if product.is_in_stock %}in-stock{% else %}out-stock{% endif %}">
+        {% if product.is_in_stock %}
+        <i class="fas fa-circle-check"></i> In Stock ({{ product.stock }} available)
+        {% else %}
+        <i class="fas fa-circle-xmark"></i> Out of Stock
+        {% endif %}
+      </div>
+
+      <div class="detail-description">
+        <h3>Description</h3>
+        <p>{{ product.description }}</p>
+      </div>
+
+      {% if product.is_in_stock %}
+      <form method="post" action="{% url 'add_to_cart' product.pk %}" class="add-to-cart-form">
+        {% csrf_token %}
+        <div class="quantity-selector">
+          <label>Quantity:</label>
+          <div class="qty-control">
+            <button type="button" onclick="changeQty(-1)">−</button>
+            <input type="number" name="quantity" id="qtyInput" value="1" min="1" max="{{ product.stock }}" />
+            <button type="button" onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <button type="submit" class="btn-add-to-cart-lg">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+          </button>
+          <a href="{% url 'cart' %}" class="btn-view-cart">
+            <i class="fas fa-eye"></i> View Cart
+          </a>
+        </div>
+      </form>
+      {% else %}
+      <div class="out-of-stock-notice">
+        <i class="fas fa-clock"></i> This item is currently out of stock. Check back soon!
+      </div>
+      {% endif %}
+
+      <div class="product-meta">
+        <div class="meta-item"><i class="fas fa-tag"></i> <strong>Category:</strong> {{ product.category.name|default:"—" }}</div>
+        <div class="meta-item"><i class="fas fa-calendar"></i> <strong>Added:</strong> {{ product.created_at|date:"F d, Y" }}</div>
+        <div class="meta-item"><i class="fas fa-truck"></i> <strong>Delivery:</strong> 3–7 business days</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="product-features">
+    <div class="feature-item">
+      <i class="fas fa-shield-halved"></i>
+      <div><strong>Genuine Product</strong><p>100% authentic</p></div>
+    </div>
+    <div class="feature-item">
+      <i class="fas fa-truck-fast"></i>
+      <div><strong>Fast Delivery</strong><p>3–7 business days</p></div>
+    </div>
+    <div class="feature-item">
+      <i class="fas fa-rotate-left"></i>
+      <div><strong>Easy Returns</strong><p>30-day return policy</p></div>
+    </div>
+    <div class="feature-item">
+      <i class="fas fa-lock"></i>
+      <div><strong>Secure Payment</strong><p>Protected checkout</p></div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  {% if related_products %}
+  <section class="related-section">
+    <div class="section-header">
+      <span class="section-tag">You might also like</span>
+      <h2>Related Products</h2>
+    </div>
+    <div class="products-grid">
+      {% for product in related_products %}
+      {% include 'store/partials/product_card.html' %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function changeQty(delta) {
+  const input = document.getElementById('qtyInput');
+  let val = parseInt(input.value) + delta;
+  val = Math.max(1, Math.min(val, parseInt(input.max)));
+  input.value = val;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}ShopVerse — Shop Everything You Love{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ───────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+  </div>
+  <div class="container hero-content">
+    <div class="hero-text">
+      <span class="hero-tag">🛍️ New Season Arrivals</span>
+      <h1>Discover Your <span class="gradient-text">Perfect Style</span></h1>
+      <p>Shop thousands of curated products at unbeatable prices. Free delivery on all orders over ₹999.</p>
+      <div class="hero-actions">
+        <a href="{% url 'product_list' %}" class="btn-hero-primary">Shop Now <i class="fas fa-arrow-right"></i></a>
+        <a href="{% url 'product_list' %}?sort=newest" class="btn-hero-secondary">New Arrivals</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><strong>50K+</strong><span>Products</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><strong>2M+</strong><span>Customers</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><strong>4.9★</strong><span>Rating</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card floating">
+        <div class="hero-card-inner">
+          <i class="fas fa-box-open fa-3x" style="color: var(--accent)"></i>
+          <p>10,000+ orders today</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Trust Badges ───────────────────────────────────────────────────────── -->
+<section class="trust-strip">
+  <div class="container trust-grid">
+    <div class="trust-item">
+      <i class="fas fa-truck-fast"></i>
+      <div><strong>Free Shipping</strong><span>On orders over ₹999</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-shield-halved"></i>
+      <div><strong>Secure Payment</strong><span>100% Protected</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-rotate-left"></i>
+      <div><strong>Easy Returns</strong><span>30-day return policy</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fas fa-headset"></i>
+      <div><strong>24/7 Support</strong><span>Always here to help</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Categories ─────────────────────────────────────────────────────────── -->
+{% if categories %}
+<section class="section categories-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Browse by</span>
+      <h2>Shop by Category</h2>
+    </div>
+    <div class="categories-grid">
+      {% for cat in categories %}
+      <a href="{% url 'product_list' %}?category={{ cat.slug }}" class="category-card">
+        <div class="category-icon">
+          <i class="fas {{ cat.icon|default:'fa-tag' }}"></i>
+        </div>
+        <span class="category-name">{{ cat.name }}</span>
+        <span class="category-count">{{ cat.products.count }} items</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Featured Products ──────────────────────────────────────────────────── -->
+{% if featured_products %}
+<section class="section products-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Hand-picked</span>
+      <h2>Featured Products</h2>
+      <a href="{% url 'product_list' %}" class="see-all">View All <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="products-grid">
+      {% for product in featured_products %}
+      {% include 'store/partials/product_card.html' %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Promo Banner ───────────────────────────────────────────────────────── -->
+<section class="promo-banner">
+  <div class="container promo-grid">
+    <div class="promo-card promo-card-lg">
+      <div class="promo-content">
+        <span>Limited Time</span>
+        <h3>Up to 50% Off</h3>
+        <p>On selected electronics and gadgets</p>
+        <a href="{% url 'product_list' %}" class="btn-promo">Shop Now</a>
+      </div>
+    </div>
+    <div class="promo-stack">
+      <div class="promo-card promo-card-sm">
+        <div class="promo-content">
+          <span>New Arrivals</span>
+          <h3>Summer Collection</h3>
+          <a href="{% url 'product_list' %}?sort=newest" class="btn-promo-sm">Explore</a>
+        </div>
+      </div>
+      <div class="promo-card promo-card-sm promo-alt">
+        <div class="promo-content">
+          <span>Best Sellers</span>
+          <h3>Top Rated Items</h3>
+          <a href="{% url 'product_list' %}" class="btn-promo-sm">Shop</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── New Arrivals ───────────────────────────────────────────────────────── -->
+{% if new_arrivals %}
+<section class="section products-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Just landed</span>
+      <h2>New Arrivals</h2>
+      <a href="{% url 'product_list' %}?sort=newest" class="see-all">View All <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="products-grid">
+      {% for product in new_arrivals %}
+      {% include 'store/partials/product_card.html' %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Newsletter ─────────────────────────────────────────────────────────── -->
+<section class="newsletter-section">
+  <div class="container">
+    <div class="newsletter-box">
+      <i class="fas fa-envelope-open-text newsletter-icon"></i>
+      <h2>Stay in the Loop</h2>
+      <p>Subscribe to get special offers, free giveaways, and exclusive deals.</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="Enter your email address" />
+        <button class="btn-subscribe">Subscribe</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
