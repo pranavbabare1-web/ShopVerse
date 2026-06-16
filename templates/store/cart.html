@@ -29,10 +29,14 @@
       <div class="cart-item-product">
         <a href="{% url 'product_detail' item.product.pk %}">
           {% if item.product.image %}
-          <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" />
-          {% else %}
-          <div class="cart-no-img"><i class="fas fa-image"></i></div>
-          {% endif %}
+<img src="{% static 'images/' %}{{ item.product.image.name|cut:'products/' }}"
+     alt="{{ item.product.name }}"
+     style="width:80px;height:80px;object-fit:cover;border-radius:8px;">
+{% else %}
+<div class="cart-no-img">
+    <i class="fas fa-image"></i>
+</div>
+{% endif %}
         </a>
         <div class="cart-item-details">
           <a href="{% url 'product_detail' item.product.pk %}">
