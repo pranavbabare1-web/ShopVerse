@@ -1,43 +1,66 @@
 {% load static %}
+
 <div class="product-card">
   <div class="product-image-wrap">
     <a href="{% url 'product_detail' product.pk %}">
+
       {% if product.image %}
-      <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" />
+        <img
+          src="{% static 'images/' %}{{ product.image.name|cut:'products/' }}"
+          alt="{{ product.name }}"
+          loading="lazy"
+        />
       {% else %}
-      <div class="no-image-placeholder">
-        <i class="fas fa-image fa-3x"></i>
-      </div>
+        <div class="no-image-placeholder">
+          <i class="fas fa-image fa-3x"></i>
+        </div>
       {% endif %}
+
     </a>
+
     {% if product.is_featured %}
-    <span class="badge badge-featured">Featured</span>
+      <span class="badge badge-featured">Featured</span>
     {% endif %}
+
     {% if not product.is_in_stock %}
-    <span class="badge badge-out">Out of Stock</span>
+      <span class="badge badge-out">Out of Stock</span>
     {% endif %}
+
     <div class="product-actions-hover">
       <a href="{% url 'product_detail' product.pk %}" class="quick-view" title="View Details">
         <i class="fas fa-eye"></i>
       </a>
     </div>
   </div>
+
   <div class="product-info">
-    <span class="product-category">{{ product.category.name|default:"Uncategorized" }}</span>
+    <span class="product-category">
+      {{ product.category.name|default:"Uncategorized" }}
+    </span>
+
     <h3 class="product-name">
-      <a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a>
+      <a href="{% url 'product_detail' product.pk %}">
+        {{ product.name }}
+      </a>
     </h3>
+
     <div class="product-rating">
-      <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-      <i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i>
+      <i class="fas fa-star"></i>
+      <i class="fas fa-star"></i>
+      <i class="fas fa-star"></i>
+      <i class="fas fa-star"></i>
+      <i class="fas fa-star-half-stroke"></i>
       <span>(4.5)</span>
     </div>
+
     <div class="product-footer">
       <span class="product-price">₹{{ product.price }}</span>
+
       {% if product.is_in_stock %}
       <form method="post" action="{% url 'add_to_cart' product.pk %}">
         {% csrf_token %}
-        <input type="hidden" name="quantity" value="1" />
+        <input type="hidden" name="quantity" value="1">
+
         <button type="submit" class="btn-add-cart" title="Add to Cart">
           <i class="fas fa-shopping-bag"></i>
         </button>
