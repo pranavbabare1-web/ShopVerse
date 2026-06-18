@@ -1,20 +1,19 @@
-"""
-Django settings for ecommerce project.
-"""
-
 from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-shopify-clone-secret-key-change-in-production-2024'
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-shopverse-secret-key"
+)
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.onrender.com',
+    ".onrender.com",
+    "127.0.0.1",
+    "localhost",
 ]
 
 INSTALLED_APPS = [
@@ -90,7 +89,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # Static Files
+
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
@@ -103,16 +105,15 @@ STATICFILES_STORAGE = (
     'whitenoise.storage.CompressedManifestStaticFilesStorage'
 )
 
-WHITENOISE_ROOT = BASE_DIR / 'static'
-
 # Media Files
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
