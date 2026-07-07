@@ -108,6 +108,7 @@ python manage.py runserver
 ```
 
 Open **http://127.0.0.1:8000** in your browser 🎉
+LIVE DEMO : https://shopverse-9jdb.onrender.com/
 
 ---
 
